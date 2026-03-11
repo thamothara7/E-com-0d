@@ -77,8 +77,8 @@ export function Navbar() {
               <Search className="w-5 h-5 text-foreground" />
             </button>
 
-            {/* Account - Replaced with Google Auth */}
-            <div className="hidden sm:flex items-center">
+            {/* Account - Google Auth */}
+            <div className="flex items-center">
               <SignInButton />
             </div>
 

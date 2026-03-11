@@ -12,11 +12,15 @@ import { MobileNav } from "@/components/mobile-nav";
 import { prisma } from "@/lib/prisma";
 
 export default async function Home() {
-  const [featuredProducts, bestSellers, combos] = await Promise.all([
-    prisma.product.findMany({ take: 8, orderBy: { createdAt: "desc" } }),
-    prisma.product.findMany({ where: { rating: { gte: 4.7 } }, take: 4 }),
-    prisma.product.findMany({ where: { category: "Combo Packs" } }),
+  const [featuredProducts, bestSellers, combos, categoriesFromDb] = await Promise.all([
+    prisma.product.findMany({ where: { isHidden: false }, take: 8, orderBy: { createdAt: "desc" } }),
+    prisma.product.findMany({ where: { rating: { gte: 4.7 }, isHidden: false }, take: 4 }),
+    prisma.product.findMany({ where: { category: "Combo Packs", isHidden: false } }),
+    prisma.category.findMany({ orderBy: { name: "asc" }, select: { name: true } }),
   ]);
+
+  const categoryNames = ["All", ...categoriesFromDb.map((c: { name: string }) => c.name)];
+
 
   return (
     <>
@@ -24,7 +28,7 @@ export default async function Home() {
       <main className="min-h-screen">
         <Hero />
         <Categories />
-        <FeaturedProducts initialProducts={featuredProducts as any} />
+        <FeaturedProducts initialProducts={featuredProducts as any} categories={categoryNames} />
         <BestSellers products={bestSellers as any} />
         <PromoCombos initialCombos={combos as any} />
         <Testimonials />

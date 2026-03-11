@@ -107,3 +107,25 @@ export const deleteProduct = createSafeAction(
     return { success: true }
   }
 )
+
+export const toggleProductVisibility = createSafeAction(
+  z.object({ id: z.number() }),
+  async (data) => {
+    const session = await auth()
+    // @ts-expect-error
+    if (session?.user?.role !== "ADMIN") throw new Error("Unauthorized")
+
+    const product = await prisma.product.findUnique({ where: { id: data.id }, select: { isHidden: true } })
+    if (!product) throw new Error("Product not found")
+
+    const updated = await prisma.product.update({
+      where: { id: data.id },
+      data: { isHidden: !product.isHidden }
+    })
+
+    revalidatePath("/admin/products")
+    revalidatePath("/")
+    
+    return updated
+  }
+)

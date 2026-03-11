@@ -4,13 +4,12 @@ import { useState } from "react";
 import { ProductCard } from "./product-card";
 import { Product } from "@/lib/store";
 
-const categories = ["All", "Spice Mixes", "Ready Mix", "Combo Packs"];
-
 interface FeaturedProductsProps {
   initialProducts: Product[];
+  categories: string[];
 }
 
-export function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
+export function FeaturedProducts({ initialProducts, categories }: FeaturedProductsProps) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filtered =
@@ -53,9 +52,15 @@ export function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
+          {filtered.length > 0 ? (
+            filtered.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))
+          ) : (
+            <div className="col-span-full text-center py-16 text-muted-foreground">
+              No products in this category yet.
+            </div>
+          )}
         </div>
       </div>
     </section>

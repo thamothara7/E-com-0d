@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Home, Search, ShoppingCart, User } from "lucide-react";
+import { Home, Search, ShoppingCart, User, LogIn } from "lucide-react";
 import { useStore } from "@/lib/store";
+import { useSession, signIn } from "next-auth/react";
 
 export function MobileNav() {
   const { cartCount, setCartOpen } = useStore();
+  const { data: session, status } = useSession();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg">
@@ -44,15 +46,35 @@ export function MobileNav() {
           <span className="text-[10px] font-medium">Cart</span>
         </button>
 
-        <Link
-          href="#"
-          className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
-          aria-label="Account"
-        >
-          <User className="w-5 h-5" />
-          <span className="text-[10px] font-medium">Account</span>
-        </Link>
+        {status === "authenticated" && session?.user ? (
+          <Link
+            href="/profile"
+            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+            aria-label="Profile"
+          >
+            {session.user.image ? (
+              <img
+                src={session.user.image}
+                alt={session.user.name || "User"}
+                className="w-5 h-5 rounded-full object-cover border border-border"
+              />
+            ) : (
+              <User className="w-5 h-5" />
+            )}
+            <span className="text-[10px] font-medium">Account</span>
+          </Link>
+        ) : (
+          <button
+            onClick={() => signIn("google")}
+            className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
+            aria-label="Sign in"
+          >
+            <LogIn className="w-5 h-5" />
+            <span className="text-[10px] font-medium">Sign In</span>
+          </button>
+        )}
       </div>
     </nav>
   );
 }
+
