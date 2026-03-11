@@ -41,7 +41,13 @@ export const authConfig = {
         session.user.id = token.id as string
         // @ts-expect-error - role is not default in next-auth type
         session.user.role = token.role as string
-        // token.name, token.email, token.picture are automatically provided by Google
+        // Forward Google profile picture from JWT to session
+        if (token.picture) {
+          session.user.image = token.picture as string
+        }
+        if (token.name) {
+          session.user.name = token.name as string
+        }
       }
       return session
     },
