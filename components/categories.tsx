@@ -1,11 +1,14 @@
-"use client";
+
 
 import Image from "next/image";
 import Link from "next/link";
-import { categories } from "@/lib/data";
 import { ArrowRight } from "lucide-react";
+import { prisma } from "@/lib/prisma";
 
-export function Categories() {
+export async function Categories() {
+  const categories = await prisma.category.findMany({
+    orderBy: { count: 'desc' }
+  });
   return (
     <section id="categories" className="py-14 sm:py-20 bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -30,7 +33,7 @@ export function Categories() {
 
         {/* Categories Grid */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-          {categories.map((category) => (
+          {categories.map((category: any) => (
             <Link
               key={category.id}
               href="#featured"

@@ -38,6 +38,9 @@ export const metadata: Metadata = {
   },
 }
 
+import { SessionProvider } from 'next-auth/react'
+import { StoreProvider } from '@/lib/store'
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,8 +49,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="font-sans antialiased">
-        {children}
-        <Analytics />
+        <SessionProvider>
+          <StoreProvider>
+            {children}
+            <Analytics />
+          </StoreProvider>
+        </SessionProvider>
       </body>
     </html>
   )

@@ -135,11 +135,11 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
             {/* Price */}
             <div className="flex items-center gap-3">
               <span className="font-bold text-3xl text-foreground">
-                ${product.price.toFixed(2)}
+                ₹{product.price.toLocaleString()}
               </span>
               {product.originalPrice && (
                 <span className="text-lg text-muted-foreground line-through">
-                  ${product.originalPrice.toFixed(2)}
+                  ₹{product.originalPrice.toLocaleString()}
                 </span>
               )}
               {discount && (
@@ -207,7 +207,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
             {/* Trust Badges */}
             <div className="grid grid-cols-3 gap-3 pt-3 border-t border-border">
               {[
-                { icon: Truck, label: "Free Shipping", sub: "Over $40" },
+                { icon: Truck, label: "Free Shipping", sub: "Over ₹500" },
                 { icon: ShieldCheck, label: "100% Natural", sub: "No additives" },
                 { icon: RotateCcw, label: "Easy Returns", sub: "30-day policy" },
               ].map(({ icon: Icon, label, sub }) => (

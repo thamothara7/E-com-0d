@@ -1,18 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { products } from "@/lib/data";
 import { ProductCard } from "./product-card";
+import { Product } from "@/lib/store";
 
 const categories = ["All", "Spice Mixes", "Ready Mix", "Combo Packs"];
 
-export function FeaturedProducts() {
+interface FeaturedProductsProps {
+  initialProducts: Product[];
+}
+
+export function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
   const [activeCategory, setActiveCategory] = useState("All");
 
   const filtered =
     activeCategory === "All"
-      ? products
-      : products.filter((p) => p.category === activeCategory);
+      ? initialProducts
+      : initialProducts.filter((p) => p.category === activeCategory);
 
   return (
     <section id="featured" className="py-14 sm:py-20 bg-background">

@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth.js Models
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("USER") // USER, ADMIN
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  orders        Order[]
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// E-commerce/Payment Models (Phase 2 Prep)
+model Order {
+  id            String      @id @default(cuid())
+  userId        String
+  amount        Int         // In smallest currency unit (e.g. paise for INR)
+  status        String      @default("PENDING") // PENDING, PAID, FAILED
+  receipt       String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  user          User        @relation(fields: [userId], references: [id])
+  payments      Payment[]
+  items         OrderItem[]
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?   @db.Text
+  image       String
+  count       Int       @default(0) // Can be used as a cache or calculated on the fly
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  products    Product[]
+}
+
+model Product {
+  id            Int         @id @default(autoincrement())
+  name          String
+  price         Float       // Let's store as Float to match mock data (12.99)
+  originalPrice Float?
+  rating        Float       @default(0)
+  reviewCount   Int         @default(0)
+  image         String
+  categoryId    Int?
+  categoryRef   Category?   @relation(fields: [categoryId], references: [id])
+  category      String      // Keeping the old string field for backwards compatibility during migration, can be removed later
+  badge         String?
+  description   String?     @db.Text
+  ingredients   String?     @db.Text
+  weight        String?
+  stockQuantity Int         @default(100) // Inventory tracking
+  isHidden      Boolean     @default(false) // Soft delete / visibility toggle
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  orderItems    OrderItem[]
+}
+
+model OrderItem {
+  id            String      @id @default(cuid())
+  orderId       String
+  productId     Int
+  quantity      Int
+  priceAtTime   Float       // Store the price they actually paid per item
+
+  order         Order       @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product     @relation(fields: [productId], references: [id])
+
+  @@unique([orderId, productId])
+}
+
+model Payment {
+  id                 String   @id @default(cuid())
+  orderId            String
+  razorpayPaymentId  String?  @unique
+  razorpayOrderId    String?  @unique
+  razorpaySignature  String?
+  amount             Int
+  status             String   @default("PENDING") // PENDING, SUCCESS, FAILED
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  order              Order    @relation(fields: [orderId], references: [id])
+}

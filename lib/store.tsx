@@ -30,6 +30,7 @@ interface StoreContextType {
   setCartOpen: (open: boolean) => void;
   cartTotal: number;
   cartCount: number;
+  clearCart: () => void;
 }
 
 const StoreContext = createContext<StoreContextType | null>(null);
@@ -74,6 +75,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
+  const clearCart = useCallback(() => {
+    setCartItems([]);
+  }, []);
+
   return (
     <StoreContext.Provider
       value={{
@@ -85,6 +90,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         setCartOpen,
         cartTotal,
         cartCount,
+        clearCart,
       }}
     >
       {children}

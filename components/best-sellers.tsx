@@ -1,12 +1,15 @@
 "use client";
 
-import { products } from "@/lib/data";
 import { ProductCard } from "./product-card";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import { Product } from "@/lib/store";
 
-export function BestSellers() {
-  const bestSellers = products.filter((p) => p.rating >= 4.7).slice(0, 4);
+interface BestSellersProps {
+  products: Product[];
+}
+
+export function BestSellers({ products: bestSellers }: BestSellersProps) {
 
   return (
     <section className="py-14 sm:py-20 bg-secondary">

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, ShoppingCart, User, Menu, X, ChefHat } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { SignInButton } from "@/components/sign-in-button";
 
 export function Navbar() {
   const { cartCount, setCartOpen } = useStore();
@@ -76,13 +77,10 @@ export function Navbar() {
               <Search className="w-5 h-5 text-foreground" />
             </button>
 
-            {/* Account */}
-            <button
-              className="hidden sm:flex p-2 rounded-full hover:bg-secondary transition-colors"
-              aria-label="Account"
-            >
-              <User className="w-5 h-5 text-foreground" />
-            </button>
+            {/* Account - Replaced with Google Auth */}
+            <div className="hidden sm:flex items-center">
+              <SignInButton />
+            </div>
 
             {/* Cart */}
             <button

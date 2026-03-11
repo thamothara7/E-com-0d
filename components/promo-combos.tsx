@@ -3,12 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Gift, Percent, Zap } from "lucide-react";
-import { useStore } from "@/lib/store";
-import { products } from "@/lib/data";
+import { useStore, Product } from "@/lib/store";
 
-export function PromoCombos() {
+interface PromoCombosProps {
+  initialCombos: Product[];
+}
+
+export function PromoCombos({ initialCombos: combos }: PromoCombosProps) {
   const { addToCart } = useStore();
-  const combos = products.filter((p) => p.category === "Combo Packs");
 
   return (
     <section id="combos" className="py-14 sm:py-20 bg-background">
@@ -106,10 +108,10 @@ export function PromoCombos() {
                 </div>
                 <div className="flex items-center justify-between mt-3">
                   <div>
-                    <span className="font-bold text-foreground">${combo.price.toFixed(2)}</span>
+                    <span className="font-bold text-foreground">₹{combo.price.toLocaleString()}</span>
                     {combo.originalPrice && (
                       <span className="text-xs text-muted-foreground line-through ml-2">
-                        ${combo.originalPrice.toFixed(2)}
+                        ₹{combo.originalPrice.toLocaleString()}
                       </span>
                     )}
                   </div>

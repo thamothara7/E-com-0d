@@ -2,6 +2,7 @@
 
 import { X, Plus, Minus, ShoppingBag, Trash2, ArrowRight } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
@@ -126,7 +127,7 @@ export function CartSidebar() {
                         </button>
                       </div>
                       <span className="font-bold text-foreground text-sm">
-                        ${(item.price * item.quantity).toFixed(2)}
+                        ₹{(item.price * item.quantity).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -140,16 +141,16 @@ export function CartSidebar() {
         {cartItems.length > 0 && (
           <div className="p-5 border-t border-border bg-card">
             {/* Free shipping notice */}
-            {cartTotal < 40 && (
+            {cartTotal < 500 && (
               <div className="bg-secondary rounded-lg p-3 mb-4 text-xs text-center text-muted-foreground">
                 Add{" "}
                 <span className="font-semibold text-foreground">
-                  ${(40 - cartTotal).toFixed(2)}
+                  ₹{(500 - cartTotal).toLocaleString()}
                 </span>{" "}
                 more for free shipping!
               </div>
             )}
-            {cartTotal >= 40 && (
+            {cartTotal >= 500 && (
               <div className="bg-primary/10 rounded-lg p-3 mb-4 text-xs text-center text-primary font-medium">
                 You qualify for free shipping!
               </div>
@@ -159,24 +160,28 @@ export function CartSidebar() {
             <div className="space-y-2 mb-4">
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Subtotal</span>
-                <span>${cartTotal.toFixed(2)}</span>
+                <span>₹{cartTotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-sm text-muted-foreground">
                 <span>Shipping</span>
-                <span className={cartTotal >= 40 ? "text-primary font-medium" : ""}>
-                  {cartTotal >= 40 ? "Free" : "$4.99"}
+                <span className={cartTotal >= 500 ? "text-primary font-medium" : ""}>
+                  {cartTotal >= 500 ? "Free" : "₹50"}
                 </span>
               </div>
               <div className="flex justify-between font-bold text-foreground text-base pt-2 border-t border-border">
                 <span>Total</span>
-                <span>${(cartTotal + (cartTotal >= 40 ? 0 : 4.99)).toFixed(2)}</span>
+                <span>₹{(cartTotal + (cartTotal >= 500 ? 0 : 50)).toLocaleString()}</span>
               </div>
             </div>
 
-            <button className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-200 hover:shadow-lg hover:shadow-primary/25">
+            <Link 
+              href="/checkout"
+              onClick={() => setCartOpen(false)}
+              className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-bold flex items-center justify-center gap-2 hover:bg-primary/90 transition-all duration-200 hover:shadow-lg hover:shadow-primary/25"
+            >
               Checkout
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
             <button
               onClick={() => setCartOpen(false)}
               className="w-full text-muted-foreground text-sm font-medium py-2 mt-2 hover:text-foreground transition-colors"

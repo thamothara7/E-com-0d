@@ -1,4 +1,3 @@
-import { StoreProvider } from "@/lib/store";
 import { Navbar } from "@/components/navbar";
 import { Hero } from "@/components/hero";
 import { Categories } from "@/components/categories";
@@ -10,23 +9,30 @@ import { Newsletter } from "@/components/newsletter";
 import { Footer } from "@/components/footer";
 import { CartSidebar } from "@/components/cart-sidebar";
 import { MobileNav } from "@/components/mobile-nav";
+import { prisma } from "@/lib/prisma";
 
-export default function HomePage() {
+export default async function Home() {
+  const [featuredProducts, bestSellers, combos] = await Promise.all([
+    prisma.product.findMany({ take: 8, orderBy: { createdAt: "desc" } }),
+    prisma.product.findMany({ where: { rating: { gte: 4.7 } }, take: 4 }),
+    prisma.product.findMany({ where: { category: "Combo Packs" } }),
+  ]);
+
   return (
-    <StoreProvider>
+    <>
       <Navbar />
-      <main className="pb-16 md:pb-0">
+      <main className="min-h-screen">
         <Hero />
         <Categories />
-        <FeaturedProducts />
-        <BestSellers />
-        <PromoCombos />
+        <FeaturedProducts initialProducts={featuredProducts as any} />
+        <BestSellers products={bestSellers as any} />
+        <PromoCombos initialCombos={combos as any} />
         <Testimonials />
         <Newsletter />
       </main>
       <Footer />
       <CartSidebar />
       <MobileNav />
-    </StoreProvider>
+    </>
   );
 }
