@@ -63,7 +63,7 @@ export async function POST(req: Request) {
     }
 
     // Signature matches! Update database records in a transaction
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // 1. Update the Order status
       const updatedOrder = await tx.order.update({
         where: { id: db_order_id },

@@ -3,7 +3,7 @@ import { auth } from "@/auth"
 import { notFound } from "next/navigation"
 import { ProductForm } from "../../new/product-form"
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth()
   
   // @ts-expect-error
@@ -11,7 +11,8 @@ export default async function EditProductPage({ params }: { params: { id: string
     notFound()
   }
 
-  const productId = parseInt(params.id)
+  const { id } = await params
+  const productId = parseInt(id)
   if (isNaN(productId)) notFound()
 
   const [product, categories] = await Promise.all([
