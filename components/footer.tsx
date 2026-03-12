@@ -2,10 +2,28 @@ import Link from "next/link";
 import { ChefHat, Instagram, Twitter, Facebook, Youtube, Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
-  const footerLinks = {
-    Shop: ["Spice Mixes", "Ready Mixes", "Combo Packs", "Best Sellers", "New Arrivals"],
-    Help: ["Track Order", "Returns & Refunds", "Shipping Info", "FAQs", "Contact Us"],
-    Company: ["About Us", "Our Story", "Sustainability", "Blog", "Press"],
+  const footerLinks: Record<string, { label: string; href: string }[]> = {
+    Shop: [
+      { label: "Spice Mixes", href: "/#categories" },
+      { label: "Ready Mixes", href: "/#categories" },
+      { label: "Combo Packs", href: "/#combos" },
+      { label: "Best Sellers", href: "/#featured" },
+      { label: "New Arrivals", href: "/#featured" },
+    ],
+    Help: [
+      { label: "Track Order", href: "/orders" },
+      { label: "Returns & Refunds", href: "/about#contact" },
+      { label: "Shipping Info", href: "/about#contact" },
+      { label: "FAQs", href: "/about#contact" },
+      { label: "Contact Us", href: "/about#contact" },
+    ],
+    Company: [
+      { label: "About Us", href: "/about" },
+      { label: "Our Story", href: "/about#story" },
+      { label: "Sustainability", href: "/about" },
+      { label: "Blog", href: "/" },
+      { label: "Press", href: "/about#contact" },
+    ],
   };
 
   return (
@@ -46,13 +64,13 @@ export function Footer() {
             <div key={section}>
               <h4 className="font-semibold text-background text-sm mb-4">{section}</h4>
               <ul className="flex flex-col gap-2.5">
-                {links.map((link) => (
-                  <li key={link}>
+                {links.map(({ label, href }) => (
+                  <li key={label}>
                     <Link
-                      href="#"
+                      href={href}
                       className="text-xs sm:text-sm opacity-60 hover:opacity-100 hover:text-primary transition-all duration-200"
                     >
-                      {link}
+                      {label}
                     </Link>
                   </li>
                 ))}
@@ -64,14 +82,14 @@ export function Footer() {
         {/* Contact Strip */}
         <div className="flex flex-wrap gap-6 py-6 border-t border-white/10 border-b mb-8">
           {[
-            { icon: Mail, text: "hello@masalaandco.com" },
-            { icon: Phone, text: "+1 (555) 012-3456" },
-            { icon: MapPin, text: "123 Spice Lane, New York, NY 10001" },
-          ].map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-2 text-xs opacity-60">
+            { icon: Mail, text: "hello@masalaandco.com", href: "mailto:hello@masalaandco.com" },
+            { icon: Phone, text: "+91 98765 43210", href: "tel:+919876543210" },
+            { icon: MapPin, text: "Chennai, Tamil Nadu, India", href: "/about#contact" },
+          ].map(({ icon: Icon, text, href }) => (
+            <a key={text} href={href} className="flex items-center gap-2 text-xs opacity-60 hover:opacity-100 transition-opacity">
               <Icon className="w-4 h-4 text-primary shrink-0" />
               <span>{text}</span>
-            </div>
+            </a>
           ))}
         </div>
 
@@ -79,12 +97,13 @@ export function Footer() {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs opacity-50">
           <p>&copy; {new Date().getFullYear()} Masala &amp; Co. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <Link href="#" className="hover:opacity-100 transition-opacity">Privacy Policy</Link>
-            <Link href="#" className="hover:opacity-100 transition-opacity">Terms of Service</Link>
-            <Link href="#" className="hover:opacity-100 transition-opacity">Cookie Policy</Link>
+            <Link href="/about" className="hover:opacity-100 transition-opacity">Privacy Policy</Link>
+            <Link href="/about" className="hover:opacity-100 transition-opacity">Terms of Service</Link>
+            <Link href="/about" className="hover:opacity-100 transition-opacity">Cookie Policy</Link>
           </div>
         </div>
       </div>
     </footer>
   );
 }
+

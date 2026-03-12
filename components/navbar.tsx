@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, User, Menu, X, ChefHat } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, ShoppingCart, Menu, X, ChefHat } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { SignInButton } from "@/components/sign-in-button";
@@ -12,13 +13,31 @@ export function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setMobileMenuOpen(false);
+      setSearchOpen(false);
+    }
+  };
+
+  // Resolve hash links: if we're not on the homepage, prefix with /
+  const resolveHref = (href: string) => {
+    if (href.startsWith("#")) {
+      return pathname === "/" ? href : `/${href}`;
+    }
+    return href;
+  };
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "#categories", label: "Shop" },
     { href: "#featured", label: "Products" },
     { href: "#combos", label: "Combos" },
-    { href: "#about", label: "About" },
+    { href: "/about", label: "About" },
   ];
 
   return (
@@ -40,7 +59,7 @@ export function Navbar() {
             {navLinks.map((link) => (
               <Link
                 key={link.href}
-                href={link.href}
+                href={resolveHref(link.href)}
                 className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors duration-200"
               >
                 {link.label}
@@ -58,21 +77,23 @@ export function Navbar() {
             <Search className="w-4 h-4 text-muted-foreground shrink-0" />
             <input
               type="text"
-              placeholder="Search spices..."
+              placeholder="Search spices… (press Enter)"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onFocus={() => setSearchOpen(true)}
               onBlur={() => setSearchOpen(false)}
+              onKeyDown={handleSearch}
               className="bg-transparent text-sm outline-none w-full text-foreground placeholder:text-muted-foreground"
             />
           </div>
 
           {/* Action Icons */}
           <div className="flex items-center gap-2">
-            {/* Mobile Search */}
+            {/* Mobile Search — toggles mobile menu to reveal search input */}
             <button
               className="md:hidden p-2 rounded-full hover:bg-secondary transition-colors"
               aria-label="Search"
+              onClick={() => setMobileMenuOpen((prev) => !prev)}
             >
               <Search className="w-5 h-5 text-foreground" />
             </button>
@@ -118,7 +139,11 @@ export function Navbar() {
               <Search className="w-4 h-4 text-muted-foreground shrink-0" />
               <input
                 type="text"
-                placeholder="Search spices..."
+                placeholder="Search spices… (press Enter)"
+                autoFocus
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearch}
                 className="bg-transparent text-sm outline-none w-full text-foreground placeholder:text-muted-foreground"
               />
             </div>
@@ -126,7 +151,7 @@ export function Navbar() {
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={resolveHref(link.href)}
                   onClick={() => setMobileMenuOpen(false)}
                   className="px-2 py-2.5 text-sm font-medium text-foreground hover:text-primary hover:bg-secondary rounded-lg transition-colors"
                 >
@@ -140,3 +165,4 @@ export function Navbar() {
     </header>
   );
 }
+

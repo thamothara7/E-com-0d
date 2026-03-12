@@ -5,10 +5,11 @@ const globalForPrisma = globalThis as unknown as {
 }
 
 // Validation to ensure we have the correct models
-const isStale = (client: any) => client && !client.product
+// We check for both product and the newly added shippingAddress to detect stale global instances
+const isStale = (client: any) => client && (!client.product || !client.shippingAddress)
 
 if (isStale(globalForPrisma.prisma)) {
-  console.log("Stale PrismaClient detected in globalThis, re-initializing...")
+  console.log("Stale PrismaClient detected in globalThis, re-initializing to include new models...")
   globalForPrisma.prisma = undefined
 }
 

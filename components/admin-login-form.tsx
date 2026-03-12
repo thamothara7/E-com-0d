@@ -2,104 +2,62 @@
 
 import { useState } from "react"
 import { signIn } from "next-auth/react"
-import { Lock, Key } from "lucide-react"
+import { ShieldCheck } from "lucide-react"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 
 export function AdminLoginForm() {
   const [isLoading, setIsLoading] = useState(false)
-  const [adminKey, setAdminKey] = useState("")
 
-  const handleAdminParams = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleAdminSignIn = async () => {
     setIsLoading(true)
-    // Stub for future admin login
-    setTimeout(() => {
-      setIsLoading(false)
-      alert("Admin access denied: Invalid security key.")
-    }, 1000)
+    await signIn("google", { callbackUrl: "/admin" })
   }
 
   return (
     <Card className="border-0 shadow-2xl bg-white/80 dark:bg-gray-950/80 backdrop-blur-2xl ring-1 ring-black/5 dark:ring-white/10 rounded-3xl overflow-hidden w-full max-w-md mx-auto">
-      <CardHeader className="pt-8">
-        <CardTitle className="text-2xl text-center">Admin Portal</CardTitle>
-        <CardDescription className="text-center">
-          Restricted access. Enter your administrative credentials to continue.
+      <CardHeader className="pt-8 text-center">
+        <div className="mx-auto w-12 h-12 bg-indigo-100 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center mb-4">
+          <ShieldCheck className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+        </div>
+        <CardTitle className="text-2xl">Admin Portal</CardTitle>
+        <CardDescription>
+          Restricted access. Use your authorized administrator Google account to sign in securely.
         </CardDescription>
       </CardHeader>
-      <CardContent className="pb-8">
-        <form onSubmit={handleAdminParams} className="space-y-6">
-          <div className="space-y-2">
-            <Label htmlFor="admin-email" className="text-gray-600 dark:text-gray-400">Administrator Email</Label>
-            <div className="relative">
-              <svg 
-                className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor" 
-                strokeWidth={2}
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+      <CardContent className="pb-8 space-y-6">
+        <Button 
+          onClick={handleAdminSignIn}
+          disabled={isLoading}
+          className="w-full h-14 rounded-xl bg-white hover:bg-gray-50 dark:bg-gray-900 dark:hover:bg-gray-800 text-gray-900 dark:text-gray-100 border border-gray-200 dark:border-gray-800 shadow-sm transition-all group relative overflow-hidden text-base font-medium"
+        >
+          {isLoading ? (
+            <span className="flex items-center gap-2">
+              <svg className="animate-spin h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
               </svg>
-              <Input 
-                id="admin-email" 
-                type="email" 
-                placeholder="admin@masalaco.com" 
-                className="pl-10 h-12 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 focus-visible:ring-gray-900 dark:focus-visible:ring-gray-100" 
-                required
-              />
-            </div>
-          </div>
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="security-key" className="text-gray-600 dark:text-gray-400">Security Key</Label>
-              <a href="#" className="text-xs font-medium text-indigo-600 dark:text-indigo-400 hover:underline">Lost key?</a>
-            </div>
-            <div className="relative">
-              <Key className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <Input 
-                id="security-key" 
-                type="password" 
-                value={adminKey}
-                onChange={(e) => setAdminKey(e.target.value)}
-                placeholder="••••••••••••" 
-                className="pl-10 h-12 rounded-xl bg-gray-50/50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800 focus-visible:ring-gray-900 dark:focus-visible:ring-gray-100" 
-                required
-              />
-            </div>
-          </div>
-          
-          <Button 
-            type="submit" 
-            disabled={isLoading}
-            className="w-full h-12 rounded-xl bg-gray-900 hover:bg-black dark:bg-gray-100 dark:hover:bg-white dark:text-gray-900 text-white shadow-xl shadow-gray-900/20 dark:shadow-white/10 transition-all group mt-4"
-          >
-            {isLoading ? (
-              <span className="flex items-center gap-2">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-current" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Authenticating...
-              </span>
-            ) : (
-              <span className="flex items-center gap-2">
-                <Lock className="h-4 w-4" />
-                Access Dashboard
-              </span>
-            )}
-          </Button>
-        </form>
+              Authenticating...
+            </span>
+          ) : (
+            <span className="flex items-center justify-center gap-3">
+              <svg className="h-5 w-5 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12.0003 4.75C13.7703 4.75 15.3553 5.36002 16.6053 6.54998L20.0303 3.125C17.9502 1.19 15.2353 0 12.0003 0C7.31028 0 3.25527 2.69 1.28027 6.60998L5.27028 9.70498C6.21525 6.86002 8.87028 4.75 12.0003 4.75Z" fill="#EA4335" />
+                <path d="M23.49 12.275C23.49 11.49 23.415 10.73 23.3 10H12V14.51H18.47C18.18 15.99 17.34 17.25 16.08 18.1L19.945 21.1C22.2 19.01 23.49 15.92 23.49 12.275Z" fill="#4285F4" />
+                <path d="M5.26498 14.2949C5.02498 13.5699 4.88501 12.7999 4.88501 11.9999C4.88501 11.1999 5.01998 10.4299 5.26498 9.7049L1.275 6.60986C0.46 8.22986 0 10.0599 0 11.9999C0 13.9399 0.46 15.7699 1.28 17.3899L5.26498 14.2949Z" fill="#FBBC05" />
+                <path d="M12.0004 24.0001C15.2404 24.0001 17.9654 22.935 19.9454 21.095L16.0804 18.095C15.0054 18.82 13.6204 19.245 12.0004 19.245C8.8704 19.245 6.21537 17.135 5.26538 14.29L1.27539 17.385C3.25539 21.31 7.3104 24.0001 12.0004 24.0001Z" fill="#34A853" />
+              </svg>
+              Sign in with Admin Google Account
+            </span>
+          )}
+        </Button>
         
         <div className="mt-8 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 flex gap-3 text-sm text-amber-800 dark:text-amber-300">
           <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          <p>This area is strictly for authorized personnel. Unauthorized access attempts are logged.</p>
+          <p>This area is strictly for authorized personnel. Your Google account must have an ADMIN role in the database to enter.</p>
         </div>
       </CardContent>
     </Card>

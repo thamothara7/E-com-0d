@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Home, Search, ShoppingCart, User, LogIn } from "lucide-react";
 import { useStore } from "@/lib/store";
 import { useSession, signIn } from "next-auth/react";
@@ -8,6 +9,7 @@ import { useSession, signIn } from "next-auth/react";
 export function MobileNav() {
   const { cartCount, setCartOpen } = useStore();
   const { data: session, status } = useSession();
+  const router = useRouter();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg">
@@ -21,14 +23,15 @@ export function MobileNav() {
           <span className="text-[10px] font-medium">Home</span>
         </Link>
 
-        <Link
-          href="#featured"
+        {/* Search — navigates to /#featured regardless of current page */}
+        <button
+          onClick={() => router.push("/#featured")}
           className="flex flex-col items-center gap-1 text-muted-foreground hover:text-primary transition-colors"
-          aria-label="Search products"
+          aria-label="Browse products"
         >
           <Search className="w-5 h-5" />
           <span className="text-[10px] font-medium">Search</span>
-        </Link>
+        </button>
 
         <button
           onClick={() => setCartOpen(true)}
@@ -77,4 +80,3 @@ export function MobileNav() {
     </nav>
   );
 }
-

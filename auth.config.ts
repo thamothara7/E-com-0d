@@ -14,18 +14,40 @@ export const authConfig = {
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user
+      // @ts-expect-error - role is not default in next-auth type
+      const role = auth?.user?.role as string | undefined
       const isOnAdmin = nextUrl.pathname.startsWith("/admin")
-      const isOnPortal = ["/profile", "/orders", "/settings"].some(route => nextUrl.pathname.startsWith(route))
-      
-      // Protect admin and portal routes
-      if (isOnAdmin || isOnPortal) {
-        if (isLoggedIn) return true
-        return false // Redirect unauthenticated users to login page (Google)
-      } else if (isLoggedIn) {
-        if (nextUrl.pathname === "/login") {
-          return Response.redirect(new URL("/admin", nextUrl))
+      const isOnPortal = ["/profile", "/orders", "/settings", "/checkout"].some(
+        (route) => nextUrl.pathname.startsWith(route)
+      )
+
+      if (isOnAdmin) {
+        if (!isLoggedIn) {
+          // Unauthenticated → redirect to admin-specific login
+          return Response.redirect(new URL("/admin-login", nextUrl))
         }
+        if (role !== "ADMIN") {
+          // Logged-in but not admin → proper 403 Unauthorized page
+          return Response.redirect(new URL("/unauthorized", nextUrl))
+        }
+        return true
       }
+
+      if (isOnPortal) {
+        if (!isLoggedIn) {
+          // Redirect to main login with callbackUrl
+          const loginUrl = new URL("/login", nextUrl)
+          loginUrl.searchParams.set("callbackUrl", nextUrl.pathname)
+          return Response.redirect(loginUrl)
+        }
+        return true
+      }
+
+      // If logged in and visiting /login or /admin-login, go home
+      if (isLoggedIn && (nextUrl.pathname === "/login" || nextUrl.pathname === "/admin-login")) {
+        return Response.redirect(new URL("/", nextUrl))
+      }
+
       return true
     },
     jwt({ token, user }) {
