@@ -16,25 +16,13 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Masala & Co. — Premium Cooking Spices & Mixes',
-  description: 'Discover handcrafted spice mixes, ready mixes, and combo packs. Elevate every dish with authentic, premium-quality ingredients.',
+  title: 'Masala & Co. — Authentic Tamil Nadu Spices & Mixes',
+  description: 'Pure, handcrafted spice mixes from Tamil Nadu. Discover authentic Sambar powder, Biryani masala, and traditional South Indian cooking essentials. Premium quality assured.',
+  keywords: ["Tamil Nadu spices", "South Indian Masala", "Traditional Madurai Spices", "Authentic Sambar Powder", "Handcrafted Spice Mixes", "Tamil Cooking Essentials"],
   generator: 'v0.app',
   icons: {
-    icon: [
-      {
-        url: '/icon-light-32x32.png',
-        media: '(prefers-color-scheme: light)',
-      },
-      {
-        url: '/icon-dark-32x32.png',
-        media: '(prefers-color-scheme: dark)',
-      },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
-    ],
-    apple: '/apple-icon.png',
+    icon: '/images/MAGHIZSUVAI - FINAL LOGO DESIGN.png',
+    apple: '/images/MAGHIZSUVAI - FINAL LOGO DESIGN.png',
   },
 }
 

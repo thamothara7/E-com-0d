@@ -30,6 +30,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
   const [activeTab, setActiveTab] = useState<"description" | "ingredients" | "reviews">(
     "description"
   );
+  const [activeImage, setActiveImage] = useState(product.images?.[0] || product.image);
   const [addedToCart, setAddedToCart] = useState(false);
 
   const discount = product.originalPrice
@@ -67,7 +68,7 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
           <div className="flex flex-col gap-4">
             <div className="relative aspect-square rounded-3xl overflow-hidden bg-secondary shadow-lg">
               <Image
-                src={product.image}
+                src={activeImage}
                 alt={product.name}
                 fill
                 className="object-cover"
@@ -85,19 +86,22 @@ export function ProductDetail({ product, relatedProducts }: ProductDetailProps) 
               )}
             </div>
             {/* Thumbnails */}
-            <div className="grid grid-cols-4 gap-3">
-              {[product.image, product.image, product.image, product.image].map((img, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    "relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 transition-all",
-                    i === 0 ? "border-primary" : "border-transparent hover:border-border"
-                  )}
-                >
-                  <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" />
-                </div>
-              ))}
-            </div>
+            {(product.images?.length || 0) > 1 && (
+              <div className="grid grid-cols-4 gap-3">
+                {product.images.map((img, i) => (
+                  <div
+                    key={i}
+                    onClick={() => setActiveImage(img)}
+                    className={cn(
+                      "relative aspect-square rounded-xl overflow-hidden cursor-pointer border-2 transition-all",
+                      activeImage === img ? "border-primary" : "border-transparent hover:border-border"
+                    )}
+                  >
+                    <Image src={img} alt={`${product.name} view ${i + 1}`} fill className="object-cover" />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Product Info */}

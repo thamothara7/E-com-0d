@@ -7,7 +7,7 @@ import { useStore } from "@/lib/store";
 import { cn } from "@/lib/utils";
 
 export function CartSidebar() {
-  const { cartItems, cartOpen, setCartOpen, removeFromCart, updateQuantity, cartTotal, cartCount } =
+  const { cartItems, cartOpen, setCartOpen, removeFromCart, updateQuantity, cartTotal, cartCount, clearCart } =
     useStore();
 
   return (
@@ -43,6 +43,14 @@ export function CartSidebar() {
               )}
             </h2>
           </div>
+          {cartItems.length > 0 && (
+            <button
+              onClick={clearCart}
+              className="text-xs font-semibold text-muted-foreground hover:text-destructive transition-colors px-3 py-1 rounded-full border border-border hover:border-destructive/20"
+            >
+              Clear All
+            </button>
+          )}
           <button
             onClick={() => setCartOpen(false)}
             className="w-8 h-8 rounded-full hover:bg-secondary flex items-center justify-center transition-colors"
@@ -82,7 +90,7 @@ export function CartSidebar() {
                   {/* Image */}
                   <div className="relative w-18 h-18 rounded-lg overflow-hidden shrink-0 bg-card w-[72px] h-[72px]">
                     <Image
-                      src={item.image}
+                      src={item.images?.[0] || item.image}
                       alt={item.name}
                       fill
                       className="object-cover"

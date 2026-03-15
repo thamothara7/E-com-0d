@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation"
 import { createProduct, updateProduct } from "@/app/actions/product"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import { Loader2, Upload } from "lucide-react"
+import { Loader2, Upload, X } from "lucide-react"
 
 const formSchema = z.object({
   name: z.string().min(2, "Name is required"),
@@ -18,6 +18,9 @@ const formSchema = z.object({
   description: z.string().optional().nullable(),
   ingredients: z.string().optional().nullable(),
   weight: z.string().optional().nullable(),
+  badge: z.string().optional().nullable(),
+  rating: z.coerce.number().min(0).max(5).default(0),
+  reviewCount: z.coerce.number().min(0).default(0),
   stockQuantity: z.coerce.number().min(0, "Stock cannot be negative"),
   isHidden: z.boolean().default(false),
 })
@@ -27,8 +30,8 @@ type FormValues = z.infer<typeof formSchema>
 export function ProductForm({ categories, initialData }: { categories: any[], initialData?: any }) {
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
-  const [imageBase64, setImageBase64] = useState<string>(initialData?.image || "")
-  const [imagePreview, setImagePreview] = useState<string>(initialData?.image || "")
+  const [imagesBase64, setImagesBase64] = useState<string[]>(initialData?.images || (initialData?.image ? [initialData.image] : []))
+  const [imagePreviews, setImagePreviews] = useState<string[]>(initialData?.images || (initialData?.image ? [initialData.image] : []))
 
   const { register, handleSubmit, formState: { errors }, watch } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -40,31 +43,42 @@ export function ProductForm({ categories, initialData }: { categories: any[], in
       description: initialData?.description || "",
       ingredients: initialData?.ingredients || "",
       weight: initialData?.weight || "",
+      badge: initialData?.badge || "",
+      rating: initialData?.rating || 0,
+      reviewCount: initialData?.reviewCount || 0,
       stockQuantity: initialData?.stockQuantity || 100,
       isHidden: initialData?.isHidden || false,
     }
   })
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
+    const files = Array.from(e.target.files || [])
+    if (files.length === 0) return
 
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Image must be less than 2MB")
-      return
-    }
+    files.forEach(file => {
+      if (file.size > 2 * 1024 * 1024) {
+        toast.error(`${file.name} is larger than 2MB`)
+        return
+      }
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      setImageBase64(reader.result as string)
-      setImagePreview(reader.result as string)
-    }
-    reader.readAsDataURL(file)
+      const reader = new FileReader()
+      reader.onload = () => {
+        const result = reader.result as string
+        setImagesBase64(prev => [...prev, result])
+        setImagePreviews(prev => [...prev, result])
+      }
+      reader.readAsDataURL(file)
+    })
+  }
+
+  const removeImage = (index: number) => {
+    setImagesBase64(prev => prev.filter((_, i) => i !== index))
+    setImagePreviews(prev => prev.filter((_, i) => i !== index))
   }
 
   const onSubmit = async (data: FormValues) => {
-    if (!imageBase64) {
-      toast.error("Product image is required")
+    if (imagesBase64.length === 0) {
+      toast.error("At least one product image is required")
       return
     }
 
@@ -72,7 +86,7 @@ export function ProductForm({ categories, initialData }: { categories: any[], in
     try {
       const payload = {
         ...data,
-        image: imageBase64,
+        images: imagesBase64,
         description: data.description || undefined,
         ingredients: data.ingredients || undefined,
         weight: data.weight || undefined,
@@ -100,29 +114,36 @@ export function ProductForm({ categories, initialData }: { categories: any[], in
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       
-      {/* Image Upload Area */}
+      {/* Multiple Image Upload Area */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Product Image</label>
-        <div className="flex items-center gap-6">
-          <div className="w-32 h-32 rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center bg-gray-50 dark:bg-gray-900/50 overflow-hidden relative group">
-            {imagePreview ? (
-              <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
-            ) : (
-               <Upload className="w-8 h-8 text-gray-400 group-hover:text-gray-500 transition-colors" />
-            )}
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Product Images</label>
+        <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
+          {imagePreviews.map((preview, idx) => (
+            <div key={idx} className="relative aspect-square rounded-xl border border-gray-200 dark:border-gray-800 overflow-hidden group">
+              <img src={preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => removeImage(idx)}
+                className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          ))}
+          
+          <div className="aspect-square rounded-xl border-2 border-dashed border-gray-300 dark:border-gray-700 flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900/50 relative hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors cursor-pointer">
+            <Upload className="w-6 h-6 text-gray-400 mb-1" />
+            <span className="text-[10px] font-medium text-gray-500">Add Image</span>
             <input 
               type="file" 
+              multiple
               accept="image/*" 
               onChange={handleImageChange}
               className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
           </div>
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            <p className="font-medium text-gray-900 dark:text-gray-100">Upload a high-quality product image.</p>
-            <p className="mt-1">Recommended: Square format (1:1), max 2MB.</p>
-            <p className="mt-1">Click the dashed box to select a file.</p>
-          </div>
         </div>
+        <p className="mt-3 text-xs text-gray-500">Square format (1:1) recommended. PNG, JPG supported. Max 2MB per file.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -192,6 +213,36 @@ export function ProductForm({ categories, initialData }: { categories: any[], in
             {...register("weight")}
             className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
             placeholder="e.g. 100g or 300g (3x100g)"
+          />
+        </div>
+
+        {/* Badge */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Product Badge (Optional)</label>
+          <input 
+            {...register("badge")}
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
+            placeholder="e.g. New, Trending, Organic"
+          />
+        </div>
+
+        {/* Rating */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Default Rating (0-5)</label>
+          <input 
+            type="number" step="0.1"
+            {...register("rating")}
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
+          />
+        </div>
+
+        {/* Review Count */}
+        <div className="space-y-2">
+          <label className="text-sm font-medium text-gray-700 dark:text-gray-300">Default Review Count</label>
+          <input 
+            type="number"
+            {...register("reviewCount")}
+            className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-orange-500"
           />
         </div>
       </div>

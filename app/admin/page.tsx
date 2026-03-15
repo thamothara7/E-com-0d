@@ -27,30 +27,41 @@ export default async function AdminDashboardPage() {
     }
   })
 
-  return (
-    <div>
-      <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100">Welcome, {session?.user?.name || 'Admin'}</h1>
-      <p className="text-muted-foreground mb-8">Here is an overview of your Masala Co platform.</p>
+  // Fetch other stats
+  const products = await prisma.product.findMany({ select: { stockQuantity: true, isHidden: true } })
+  const lowStockCount = products.filter((p: { stockQuantity: number }) => p.stockQuantity <= 10).length
+  const hiddenCount = products.filter((p: { isHidden: boolean }) => p.isHidden).length
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        {/* Stat Card 1 */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <span className="text-sm font-medium text-gray-500 mb-1">Total Users</span>
-          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{userCount}</span>
+  return (
+    <div className="space-y-8">
+      <div>
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-gray-100 uppercase tracking-tight">Dashboard Overview</h1>
+        <p className="text-muted-foreground">Manage your Masala & Co. business at a glance.</p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        {/* Stat Card: Revenue */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Total Revenue</span>
+          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">₹{totalRevenue.toLocaleString()}</span>
         </div>
 
-        {/* Stat Card 2 */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <span className="text-sm font-medium text-gray-500 mb-1">Total Orders</span>
+        {/* Stat Card: Orders */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Total Orders</span>
           <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{orderCount}</span>
         </div>
-        
-        {/* Stat Card 3 */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col">
-          <span className="text-sm font-medium text-gray-500 mb-1">Total Revenue</span>
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">₹{totalRevenue.toLocaleString()}</span>
-          </div>
+
+        {/* Stat Card: Low Stock */}
+        <div className={`p-6 rounded-2xl border shadow-sm flex flex-col justify-between ${lowStockCount > 0 ? 'bg-red-50 dark:bg-red-950/30 border-red-100 dark:border-red-900' : 'bg-white dark:bg-gray-800 border-gray-100 dark:border-gray-800'}`}>
+          <span className={`text-xs font-semibold uppercase tracking-wider mb-2 ${lowStockCount > 0 ? 'text-red-500' : 'text-gray-400'}`}>Low Stock Alert</span>
+          <span className={`text-3xl font-bold ${lowStockCount > 0 ? 'text-red-600 dark:text-red-400' : 'text-gray-900 dark:text-gray-100'}`}>{lowStockCount}</span>
+        </div>
+
+        {/* Stat Card: Hidden Products */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm flex flex-col justify-between">
+          <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Hidden Products</span>
+          <span className="text-3xl font-bold text-gray-900 dark:text-gray-100">{hiddenCount}</span>
         </div>
       </div>
 

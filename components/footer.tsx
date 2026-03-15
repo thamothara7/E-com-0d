@@ -33,13 +33,12 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="flex items-center gap-2 mb-5">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <ChefHat className="w-4 h-4 text-primary-foreground" />
-              </div>
-              <span className="font-serif font-bold text-lg text-background tracking-tight">
-                Masala <span className="text-primary">&amp; Co.</span>
-              </span>
+            <Link href="/" className="flex items-center justify-center bg-white w-fit px-3 py-1.5 rounded-xl mb-5">
+              <img 
+                src="/images/MAGHIZSUVAI - FINAL LOGO DESIGN.png" 
+                alt="Maghizsuvai Logo" 
+                className="h-10 w-auto object-contain"
+              />
             </Link>
             <p className="text-sm leading-relaxed mb-6 max-w-xs opacity-70">
               Crafting authentic, premium-quality spice blends and cooking mixes since 2018. Bringing the world&apos;s flavors to your kitchen.

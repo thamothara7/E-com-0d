@@ -14,8 +14,12 @@ const ProductSchema = z.object({
   description: z.string().optional(),
   ingredients: z.string().optional(),
   weight: z.string().optional(),
+  badge: z.string().optional().nullable(),
+  rating: z.number().min(0).max(5).default(0),
+  reviewCount: z.number().min(0).default(0),
   stockQuantity: z.number().min(0, "Stock cannot be negative"),
-  image: z.string().url("Valid image URL is required").or(z.string().startsWith("/")).or(z.string().startsWith("data:image/")),
+  image: z.string().optional().default(""), // transition field
+  images: z.array(z.string()).min(1, "At least one image is required"),
   isHidden: z.boolean().default(false)
 })
 
@@ -27,29 +31,47 @@ export const createProduct = createSafeAction(
     // @ts-expect-error
     if (session?.user?.role !== "ADMIN") throw new Error("Unauthorized")
 
-    const category = await prisma.category.findUnique({ where: { id: data.categoryId } })
-    if (!category) throw new Error("Category not found")
-
-    const product = await prisma.product.create({
-      data: {
-        name: data.name,
-        price: data.price,
-        originalPrice: data.originalPrice,
-        categoryId: data.categoryId,
-        category: category.name, // keep in sync
-        description: data.description,
-        ingredients: data.ingredients,
-        weight: data.weight,
-        stockQuantity: data.stockQuantity,
-        image: data.image,
-        isHidden: data.isHidden
-      }
-    })
-
-    revalidatePath("/admin/products")
-    revalidatePath("/")
+    console.log("[createProduct] Attempting to create product with data:", data)
     
-    return product
+    const category = await prisma.category.findUnique({ where: { id: data.categoryId } })
+    if (!category) {
+      console.error("[createProduct] Category not found for ID:", data.categoryId)
+      throw new Error("Category not found")
+    }
+
+    try {
+      const product = await prisma.product.create({
+        data: {
+          name: data.name,
+          price: data.price,
+          originalPrice: data.originalPrice,
+          categoryId: data.categoryId,
+          category: category.name,
+          description: data.description,
+          ingredients: data.ingredients,
+          weight: data.weight,
+          badge: data.badge,
+          rating: data.rating,
+          reviewCount: data.reviewCount,
+          stockQuantity: data.stockQuantity,
+          image: data.images[0] || "", // use first image for legacy field
+          images: data.images,
+          isHidden: data.isHidden
+        }
+      })
+
+      console.log("[createProduct] Product created successfully:", product.id)
+      revalidatePath("/admin/products")
+      revalidatePath("/")
+      
+      return product
+    } catch (error: any) {
+      console.error("[createProduct] Prisma Error:", error)
+      if (error.code === 'P2002') {
+        console.error("[createProduct] Unique constraint failed on fields:", error.meta?.target)
+      }
+      throw error // Re-throw to be caught by safe-action
+    }
   }
 )
 
@@ -77,8 +99,12 @@ export const updateProduct = createSafeAction(
         description: data.description,
         ingredients: data.ingredients,
         weight: data.weight,
+        badge: data.badge,
+        rating: data.rating,
+        reviewCount: data.reviewCount,
         stockQuantity: data.stockQuantity,
-        image: data.image,
+        image: data.images[0] || "",
+        images: data.images,
         isHidden: data.isHidden
       }
     })

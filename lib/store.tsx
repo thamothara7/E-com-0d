@@ -10,6 +10,7 @@ export interface Product {
   rating: number;
   reviewCount: number;
   image: string;
+  images: string[];
   category: string;
   badge?: string;
   description?: string;
@@ -51,7 +52,6 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { ...product, quantity: 1 }];
     });
-    setCartOpen(true);
   }, []);
 
   const removeFromCart = useCallback((id: number) => {

@@ -39,8 +39,10 @@ export function ProductCard({ product, className }: ProductCardProps) {
     >
       {/* Image Container */}
       <div className="relative overflow-hidden aspect-square bg-secondary">
+        {/* Mobile Link Overlay */}
+        <Link href={`/product/${product.id}`} className="absolute inset-0 z-20 md:hidden" aria-label={`View ${product.name}`} />
         <Image
-          src={product.image}
+          src={product.images?.[0] || product.image}
           alt={product.name}
           fill
           className={cn(
@@ -63,7 +65,7 @@ export function ProductCard({ product, className }: ProductCardProps) {
         {/* Hover Actions */}
         <div
           className={cn(
-            "absolute inset-0 bg-black/20 flex items-center justify-center gap-3 transition-opacity duration-200",
+            "absolute inset-0 bg-black/20 hidden md:flex items-center justify-center gap-3 transition-opacity duration-200",
             hovered ? "opacity-100" : "opacity-0"
           )}
         >
@@ -133,13 +135,13 @@ export function ProductCard({ product, className }: ProductCardProps) {
           <button
             onClick={handleAddToCart}
             className={cn(
-              "flex items-center gap-1.5 text-xs font-semibold px-3 py-2 rounded-full transition-all duration-200",
+              "flex items-center gap-1.5 text-xs font-semibold px-4 py-2.5 rounded-full transition-all duration-200 min-w-[95px] justify-center shadow-sm",
               added
                 ? "bg-green-500 text-white"
                 : "bg-primary text-primary-foreground hover:bg-primary/90"
             )}
           >
-            <ShoppingCart className="w-3.5 h-3.5" />
+            <ShoppingCart className="w-4 h-4" />
             {added ? "Added!" : "Add"}
           </button>
         </div>

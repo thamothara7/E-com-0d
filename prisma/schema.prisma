@@ -110,7 +110,9 @@ model Product {
   originalPrice Float?
   rating        Float       @default(0)
   reviewCount   Int         @default(0)
-  image         String
+  image         String      @default("") // Keep for now to avoid breaking existing data immediately, but we will transition
+  images        String[]    @default([]) // Support for multiple images
+
   categoryId    Int?
   categoryRef   Category?   @relation(fields: [categoryId], references: [id])
   category      String      // Keeping the old string field for backwards compatibility during migration, can be removed later

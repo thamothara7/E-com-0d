@@ -6,11 +6,8 @@ export default function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/admin/:path*",
-    "/profile/:path*",
-    "/orders/:path*",
-    "/settings/:path*",
-    "/checkout/:path*",
-  ],
+  // Broad matcher to ensure all routes (including /admin, /profile, etc.) are processed by auth middleware
+  // while ignoring static assets and API routes.
+  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
 }
+

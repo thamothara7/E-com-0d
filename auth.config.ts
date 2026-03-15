@@ -16,12 +16,12 @@ export const authConfig = {
       const isLoggedIn = !!auth?.user
       // @ts-expect-error - role is not default in next-auth type
       const role = auth?.user?.role as string | undefined
-      const isOnAdmin = nextUrl.pathname.startsWith("/admin")
+      const isAdminRoute = nextUrl.pathname.startsWith("/admin/") || nextUrl.pathname === "/admin"
       const isOnPortal = ["/profile", "/orders", "/settings", "/checkout"].some(
         (route) => nextUrl.pathname.startsWith(route)
       )
 
-      if (isOnAdmin) {
+      if (isAdminRoute) {
         if (!isLoggedIn) {
           // Unauthenticated → redirect to admin-specific login
           return Response.redirect(new URL("/admin-login", nextUrl))

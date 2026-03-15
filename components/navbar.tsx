@@ -45,13 +45,12 @@ export function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <ChefHat className="w-4 h-4 text-primary-foreground" />
-            </div>
-            <span className="font-serif font-bold text-lg text-foreground tracking-tight">
-              Masala <span className="text-primary">&amp; Co.</span>
-            </span>
+          <Link href="/" className="flex items-center shrink-0">
+            <img 
+              src="/images/MAGHIZSUVAI - FINAL LOGO DESIGN.png" 
+              alt="Maghizsuvai Logo" 
+              className="h-12 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Nav Links */}

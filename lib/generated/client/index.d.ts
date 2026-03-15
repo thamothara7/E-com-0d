@@ -9746,6 +9746,7 @@ export namespace Prisma {
     rating: number
     reviewCount: number
     image: number
+    images: number
     categoryId: number
     category: number
     badge: number
@@ -9828,6 +9829,7 @@ export namespace Prisma {
     rating?: true
     reviewCount?: true
     image?: true
+    images?: true
     categoryId?: true
     category?: true
     badge?: true
@@ -9935,6 +9937,7 @@ export namespace Prisma {
     rating: number
     reviewCount: number
     image: string
+    images: string[]
     categoryId: number | null
     category: string
     badge: string | null
@@ -9974,6 +9977,7 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     image?: boolean
+    images?: boolean
     categoryId?: boolean
     category?: boolean
     badge?: boolean
@@ -9997,6 +10001,7 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     image?: boolean
+    images?: boolean
     categoryId?: boolean
     category?: boolean
     badge?: boolean
@@ -10018,6 +10023,7 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     image?: boolean
+    images?: boolean
     categoryId?: boolean
     category?: boolean
     badge?: boolean
@@ -10039,6 +10045,7 @@ export namespace Prisma {
     rating?: boolean
     reviewCount?: boolean
     image?: boolean
+    images?: boolean
     categoryId?: boolean
     category?: boolean
     badge?: boolean
@@ -10051,7 +10058,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "originalPrice" | "rating" | "reviewCount" | "image" | "categoryId" | "category" | "badge" | "description" | "ingredients" | "weight" | "stockQuantity" | "isHidden" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
+  export type ProductOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "price" | "originalPrice" | "rating" | "reviewCount" | "image" | "images" | "categoryId" | "category" | "badge" | "description" | "ingredients" | "weight" | "stockQuantity" | "isHidden" | "createdAt" | "updatedAt", ExtArgs["result"]["product"]>
   export type ProductInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     categoryRef?: boolean | Product$categoryRefArgs<ExtArgs>
     orderItems?: boolean | Product$orderItemsArgs<ExtArgs>
@@ -10078,6 +10085,7 @@ export namespace Prisma {
       rating: number
       reviewCount: number
       image: string
+      images: string[]
       categoryId: number | null
       category: string
       badge: string | null
@@ -10520,6 +10528,7 @@ export namespace Prisma {
     readonly rating: FieldRef<"Product", 'Float'>
     readonly reviewCount: FieldRef<"Product", 'Int'>
     readonly image: FieldRef<"Product", 'String'>
+    readonly images: FieldRef<"Product", 'String[]'>
     readonly categoryId: FieldRef<"Product", 'Int'>
     readonly category: FieldRef<"Product", 'String'>
     readonly badge: FieldRef<"Product", 'String'>
@@ -13355,6 +13364,7 @@ export namespace Prisma {
     rating: 'rating',
     reviewCount: 'reviewCount',
     image: 'image',
+    images: 'images',
     categoryId: 'categoryId',
     category: 'category',
     badge: 'badge',
@@ -13992,6 +14002,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Product"> | number
     reviewCount?: IntFilter<"Product"> | number
     image?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     categoryId?: IntNullableFilter<"Product"> | number | null
     category?: StringFilter<"Product"> | string
     badge?: StringNullableFilter<"Product"> | string | null
@@ -14014,6 +14025,7 @@ export namespace Prisma {
     rating?: SortOrder
     reviewCount?: SortOrder
     image?: SortOrder
+    images?: SortOrder
     categoryId?: SortOrderInput | SortOrder
     category?: SortOrder
     badge?: SortOrderInput | SortOrder
@@ -14039,6 +14051,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Product"> | number
     reviewCount?: IntFilter<"Product"> | number
     image?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     categoryId?: IntNullableFilter<"Product"> | number | null
     category?: StringFilter<"Product"> | string
     badge?: StringNullableFilter<"Product"> | string | null
@@ -14061,6 +14074,7 @@ export namespace Prisma {
     rating?: SortOrder
     reviewCount?: SortOrder
     image?: SortOrder
+    images?: SortOrder
     categoryId?: SortOrderInput | SortOrder
     category?: SortOrder
     badge?: SortOrderInput | SortOrder
@@ -14089,6 +14103,7 @@ export namespace Prisma {
     rating?: FloatWithAggregatesFilter<"Product"> | number
     reviewCount?: IntWithAggregatesFilter<"Product"> | number
     image?: StringWithAggregatesFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     categoryId?: IntNullableWithAggregatesFilter<"Product"> | number | null
     category?: StringWithAggregatesFilter<"Product"> | string
     badge?: StringNullableWithAggregatesFilter<"Product"> | string | null
@@ -14777,7 +14792,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     category: string
     badge?: string | null
     description?: string | null
@@ -14798,7 +14814,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     categoryId?: number | null
     category: string
     badge?: string | null
@@ -14819,6 +14836,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14840,6 +14858,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14860,7 +14879,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     categoryId?: number | null
     category: string
     badge?: string | null
@@ -14880,6 +14900,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -14899,6 +14920,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
@@ -15570,6 +15592,14 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type StringNullableListFilter<$PrismaModel = never> = {
+    equals?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    has?: string | StringFieldRefInput<$PrismaModel> | null
+    hasEvery?: string[] | ListStringFieldRefInput<$PrismaModel>
+    hasSome?: string[] | ListStringFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
   export type BoolFilter<$PrismaModel = never> = {
     equals?: boolean | BooleanFieldRefInput<$PrismaModel>
     not?: NestedBoolFilter<$PrismaModel> | boolean
@@ -15588,6 +15618,7 @@ export namespace Prisma {
     rating?: SortOrder
     reviewCount?: SortOrder
     image?: SortOrder
+    images?: SortOrder
     categoryId?: SortOrder
     category?: SortOrder
     badge?: SortOrder
@@ -16167,6 +16198,10 @@ export namespace Prisma {
     deleteMany?: ProductScalarWhereInput | ProductScalarWhereInput[]
   }
 
+  export type ProductCreateimagesInput = {
+    set: string[]
+  }
+
   export type CategoryCreateNestedOneWithoutProductsInput = {
     create?: XOR<CategoryCreateWithoutProductsInput, CategoryUncheckedCreateWithoutProductsInput>
     connectOrCreate?: CategoryCreateOrConnectWithoutProductsInput
@@ -16201,6 +16236,11 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type ProductUpdateimagesInput = {
+    set?: string[]
+    push?: string | string[]
   }
 
   export type BoolFieldUpdateOperationsInput = {
@@ -17177,7 +17217,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     category: string
     badge?: string | null
     description?: string | null
@@ -17197,7 +17238,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     category: string
     badge?: string | null
     description?: string | null
@@ -17247,6 +17289,7 @@ export namespace Prisma {
     rating?: FloatFilter<"Product"> | number
     reviewCount?: IntFilter<"Product"> | number
     image?: StringFilter<"Product"> | string
+    images?: StringNullableListFilter<"Product">
     categoryId?: IntNullableFilter<"Product"> | number | null
     category?: StringFilter<"Product"> | string
     badge?: StringNullableFilter<"Product"> | string | null
@@ -17386,7 +17429,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     category: string
     badge?: string | null
     description?: string | null
@@ -17406,7 +17450,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     categoryId?: number | null
     category: string
     badge?: string | null
@@ -17475,6 +17520,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17495,6 +17541,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     categoryId?: NullableIntFieldUpdateOperationsInput | number | null
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17766,7 +17813,8 @@ export namespace Prisma {
     originalPrice?: number | null
     rating?: number
     reviewCount?: number
-    image: string
+    image?: string
+    images?: ProductCreateimagesInput | string[]
     category: string
     badge?: string | null
     description?: string | null
@@ -17785,6 +17833,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17805,6 +17854,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
@@ -17825,6 +17875,7 @@ export namespace Prisma {
     rating?: FloatFieldUpdateOperationsInput | number
     reviewCount?: IntFieldUpdateOperationsInput | number
     image?: StringFieldUpdateOperationsInput | string
+    images?: ProductUpdateimagesInput | string[]
     category?: StringFieldUpdateOperationsInput | string
     badge?: NullableStringFieldUpdateOperationsInput | string | null
     description?: NullableStringFieldUpdateOperationsInput | string | null
